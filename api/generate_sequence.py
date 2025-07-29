@@ -1,19 +1,9 @@
-import os
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import openai
-import json
 
-app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Use APIRouter
+router = APIRouter()
 
 class SequenceRequest(BaseModel):
     api_key: str
@@ -24,7 +14,8 @@ class SequenceRequest(BaseModel):
     offer: str
     tone: str
 
-@app.post("/api/sequence")
+# Use the router decorator and a relative path
+@router.post("/sequence")
 async def generate_sequence(request: SequenceRequest):
     """
     Generates a 3-email sequence (cold email + 2 follow-ups).

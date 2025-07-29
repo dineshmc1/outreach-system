@@ -1,36 +1,27 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, EmailStr
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 import dns.resolver
 import re
 
-app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Use APIRouter
+router = APIRouter()
 
 class VerifyRequest(BaseModel):
     email: str
 
-@app.post("/api/verify")
+# Use the router decorator and a relative path
+@router.post("/verify")
 async def verify_email(request: VerifyRequest):
     """
     Verifies an email address using regex and MX record checks.
     """
     email = request.email
     
-    # 1. Basic Regex Check
     if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
         return {"email": email, "is_valid": False, "reason": "Invalid syntax."}
         
     domain = email.split('@')[1]
     
-    # 2. MX Record Check
     try:
         records = dns.resolver.resolve(domain, 'MX')
         if len(records) > 0:

@@ -1,18 +1,9 @@
-import os
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import openai
 
-app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Use APIRouter
+router = APIRouter()
 
 class FollowupRequest(BaseModel):
     api_key: str
@@ -22,7 +13,8 @@ class FollowupRequest(BaseModel):
     delay_days: int
     tone: str
 
-@app.post("/api/followup")
+# Use the router decorator and a relative path
+@router.post("/followup")
 async def generate_followup(request: FollowupRequest):
     """
     Generates a follow-up email.

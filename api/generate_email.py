@@ -1,19 +1,9 @@
-import os
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import openai
 
-app = FastAPI()
-
-# CORS Middleware for Frontend
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Use APIRouter instead of FastAPI
+router = APIRouter()
 
 class EmailRequest(BaseModel):
     api_key: str
@@ -24,7 +14,8 @@ class EmailRequest(BaseModel):
     offer: str
     tone: str
 
-@app.post("/api/generate")
+# Use the router decorator and a relative path
+@router.post("/generate")
 async def generate_email(request: EmailRequest):
     """
     Generates a single cold email using GPT-4o.
