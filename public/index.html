@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OutreachGPT Pro</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>OutreachGPT <span>Pro</span></h1>
+            <p>Your AI-Powered Lead Generation & Outreach Co-pilot</p>
+        </header>
+
+        <div class="api-key-container">
+            <label for="apiKey">Your OpenAI API Key</label>
+            <input type="password" id="apiKey" placeholder="sk-...">
+        </div>
+
+        <div class="tabs">
+            <button class="tab-link active" onclick="openTab(event, 'cold-email')">Cold Email</button>
+            <button class="tab-link" onclick="openTab(event, 'follow-up')">Follow-Up</button>
+            <button class="tab-link" onclick="openTab(event, 'csv-upload')">CSV Bulk Sequence</button>
+            <button class="tab-link" onclick="openTab(event, 'maps-scraper')">Maps Scraper</button>
+            <button class="tab-link" onclick="openTab(event, 'linkedin-scraper')">LinkedIn Scraper</button>
+            <button class="tab-link" onclick="openTab(event, 'email-verifier')">Email Verifier</button>
+        </div>
+
+        <!-- Cold Email Generator -->
+        <div id="cold-email" class="tab-content active">
+            <h2>Cold Email Generator</h2>
+            <form id="cold-email-form">
+                <input type="text" id="ce-name" placeholder="Lead's Name (e.g., Jane)" required>
+                <input type="text" id="ce-role" placeholder="Role (e.g., Head of Marketing)" required>
+                <input type="text" id="ce-company" placeholder="Company (e.g., Acme Inc.)" required>
+                <textarea id="ce-pain" placeholder="Pain Point (e.g., struggling with low user engagement)" required></textarea>
+                <textarea id="ce-offer" placeholder="Your Offer (e.g., an AI tool that boosts engagement by 40%)" required></textarea>
+                <select id="ce-tone">
+                    <option value="professional">Professional</option>
+                    <option value="casual">Casual</option>
+                    <option value="direct">Direct</option>
+                    <option value="friendly">Friendly</option>
+                </select>
+                <button type="submit">Generate Email</button>
+            </form>
+        </div>
+
+        <!-- Follow-Up Generator -->
+        <div id="follow-up" class="tab-content">
+            <h2>Follow-Up Generator</h2>
+            <form id="follow-up-form">
+                <input type="text" id="fu-role" placeholder="Role (e.g., CEO)" required>
+                <input type="text" id="fu-company" placeholder="Company (e.g., StartupX)" required>
+                <textarea id="fu-context" placeholder="Context of previous email..." required></textarea>
+                <input type="number" id="fu-delay" placeholder="Days since last email (e.g., 3)" required>
+                <select id="fu-tone">
+                    <option value="polite">Polite</option>
+                    <option value="assertive">Assertive</option>
+                    <option value="value-driven">Value-Driven</option>
+                </select>
+                <button type="submit">Generate Follow-Up</button>
+            </form>
+        </div>
+        
+        <!-- CSV Upload -->
+        <div id="csv-upload" class="tab-content">
+            <h2>Generate Sequences from CSV</h2>
+            <p>Upload a CSV with headers: <strong>name, role, company, pain_point, offer, tone</strong></p>
+            <form id="csv-form">
+                <input type="file" id="csv-file" accept=".csv" required>
+                <button type="submit">Generate Bulk Sequences</button>
+            </form>
+        </div>
+
+        <!-- Maps Scraper -->
+        <div id="maps-scraper" class="tab-content">
+            <h2>Google Maps Lead Scraper</h2>
+            <form id="maps-scraper-form">
+                <input type="text" id="maps-keyword" placeholder="Keyword (e.g., marketing agencies)" required>
+                <input type="text" id="maps-location" placeholder="Location (e.g., New York)" required>
+                <button type="submit">Scrape Leads</button>
+            </form>
+        </div>
+
+        <!-- LinkedIn Scraper -->
+        <div id="linkedin-scraper" class="tab-content">
+            <h2>Live LinkedIn Profile Scraper</h2>
+            <div class="security-warning">
+                <strong>Security Risk:</strong> You are entering your LinkedIn credentials directly into the browser. This is not recommended. Use a burner account and proceed at your own risk. Scraping violates LinkedIn's ToS.
+            </div>
+            <form id="linkedin-scraper-form">
+                <input type="url" id="linkedin-url" placeholder="LinkedIn Profile URL" required>
+                <input type="email" id="linkedin-email" placeholder="Your LinkedIn Email" required>
+                <input type="password" id="linkedin-password" placeholder="Your LinkedIn Password" required>
+                <button type="submit">Scrape Profile</button>
+            </form>
+        </div>
+
+        <!-- Email Verifier -->
+        <div id="email-verifier" class="tab-content">
+            <h2>Email Verifier</h2>
+            <form id="email-verifier-form">
+                <input type="email" id="verify-email-input" placeholder="Enter email to verify" required>
+                <button type="submit">Verify Email</button>
+            </form>
+        </div>
+
+        <!-- Universal Output Area -->
+        <div id="output-container" class="hidden">
+            <div class="output-header">
+                <h3>Result</h3>
+                <button id="copy-btn">Copy to Clipboard</button>
+            </div>
+            <div id="loader" class="loader hidden"></div>
+            <pre id="output-box"></pre>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
