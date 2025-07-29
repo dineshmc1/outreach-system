@@ -8,3 +8,4 @@ requests
 beautifulsoup4
 dnspython
 selenium
+google-search-results
