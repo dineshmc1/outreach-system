@@ -16,7 +16,7 @@ class LinkedinSearchRequest(BaseModel):
     password: str
     search_keyword: str
     # Optional: limit the number of pages to scrape to avoid timeouts
-    max_pages: int = 2 
+    max_pages: int = 1
 
 @router.post("/linkedin-search")
 async def linkedin_search(request: LinkedinSearchRequest):
