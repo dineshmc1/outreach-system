@@ -14,9 +14,17 @@
             <p>Your AI-Powered Lead Generation & Outreach Co-pilot</p>
         </header>
 
-        <div class="api-key-container">
-            <label for="apiKey">Your OpenAI API Key</label>
-            <input type="password" id="apiKey" placeholder="sk-...">
+        <!-- MODIFIED: Grouped API keys together -->
+        <div class="api-key-group">
+            <div class="api-key-container">
+                <label for="apiKey">Your OpenAI API Key</label>
+                <input type="password" id="apiKey" placeholder="sk-...">
+            </div>
+            <!-- NEW: SerpApi Key Input -->
+            <div class="api-key-container">
+                <label for="serpApiKey">Your SerpApi API Key (for Maps Scraper)</label>
+                <input type="password" id="serpApiKey" placeholder="Your key from serpapi.com...">
+            </div>
         </div>
 
         <div class="tabs">
@@ -24,7 +32,7 @@
             <button class="tab-link" onclick="openTab(event, 'follow-up')">Follow-Up</button>
             <button class="tab-link" onclick="openTab(event, 'csv-upload')">CSV Bulk Sequence</button>
             <button class="tab-link" onclick="openTab(event, 'maps-scraper')">Maps Scraper</button>
-            <button class="tab-link" onclick="openTab(event, 'linkedin-scraper')">LinkedIn Scraper</button>
+            <button class="tab-link" onclick="openTab(event, 'linkedin-scraper')">LinkedIn Search</button>
             <button class="tab-link" onclick="openTab(event, 'email-verifier')">Email Verifier</button>
         </div>
 
@@ -76,7 +84,7 @@
 
         <!-- Maps Scraper -->
         <div id="maps-scraper" class="tab-content">
-            <h2>Google Maps Lead Scraper</h2>
+            <h2>Google Maps Lead Scraper (via SerpApi)</h2>
             <form id="maps-scraper-form">
                 <input type="text" id="maps-keyword" placeholder="Keyword (e.g., marketing agencies)" required>
                 <input type="text" id="maps-location" placeholder="Location (e.g., New York)" required>
@@ -86,15 +94,15 @@
 
         <!-- LinkedIn Scraper -->
         <div id="linkedin-scraper" class="tab-content">
-            <h2>Live LinkedIn Profile Scraper</h2>
+            <h2>Live LinkedIn People Search</h2>
             <div class="security-warning">
-                <strong>Security Risk:</strong> You are entering your LinkedIn credentials directly into the browser. This is not recommended. Use a burner account and proceed at your own risk. Scraping violates LinkedIn's ToS.
+                <strong>Security & Usage Warning:</strong> This is a long-running task that may time out on free hosting plans. Scraping violates LinkedIn's ToS. Use a burner account.
             </div>
             <form id="linkedin-scraper-form">
-                <input type="url" id="linkedin-url" placeholder="LinkedIn Profile URL" required>
+                <input type="text" id="linkedin-keyword" placeholder="Search Keyword (e.g., Software Engineer in New York)" required>
                 <input type="email" id="linkedin-email" placeholder="Your LinkedIn Email" required>
                 <input type="password" id="linkedin-password" placeholder="Your LinkedIn Password" required>
-                <button type="submit">Scrape Profile</button>
+                <button type="submit">Search Profiles</button>
             </form>
         </div>
 

@@ -222,3 +222,26 @@ button:hover {
     display: block;
     margin-bottom: 0.25rem;
 }
+
+/* Add this to the end of your style.css file */
+
+.api-key-group {
+    padding: 1rem 2rem;
+    background-color: #eef2ff;
+    border-bottom: 1px solid var(--border-color);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.api-key-container {
+    padding: 0; /* Remove padding from individual containers */
+    background-color: transparent;
+    border: none;
+}
+
+@media (min-width: 768px) {
+    .api-key-group {
+        grid-template-columns: 1fr 1fr; /* Side-by-side on larger screens */
+    }
+}
