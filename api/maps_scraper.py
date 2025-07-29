@@ -1,67 +1,59 @@
+# api/maps_scraper.py
+
 from fastapi import APIRouter, HTTPException
-import requests
-from bs4 import BeautifulSoup
-import re
+from pydantic import BaseModel
+from serpapi import GoogleSearch
 
 # Use APIRouter
 router = APIRouter()
 
-HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
-}
+# Define a Pydantic model to accept the request body
+class MapsScrapeRequest(BaseModel):
+    api_key: str
+    keyword: str
+    location: str
 
-def find_email_on_site(url):
-    try:
-        if not url.startswith('http'):
-            url = 'http://' + url
-        response = requests.get(url, headers=HEADERS, timeout=5)
-        response.raise_for_status()
-        
-        email_regex = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
-        emails = re.findall(email_regex, response.text)
-        
-        valid_emails = [email for email in emails if not email.endswith(('.png', '.jpg', '.gif', '.svg'))]
-        
-        return valid_emails[0] if valid_emails else "Not Found"
-    except requests.RequestException:
-        return "Website Unreachable"
+# CHANGE: This is now a POST endpoint to securely receive the API key
+@router.post("/maps-scrape")
+async def maps_scrape(request: MapsScrapeRequest):
+    """
+    Scrapes Google Maps for leads using the SerpApi service for reliability.
+    The API key is provided in the request body.
+    """
+    if not request.api_key:
+        raise HTTPException(
+            status_code=400, 
+            detail="SerpApi API Key is required."
+        )
 
-# Use the router decorator and a relative path
-@router.get("/maps-scrape")
-async def maps_scrape(keyword: str, location: str):
-    """
-    Scrapes Google Maps for business leads (Demonstration).
-    """
+    params = {
+        "engine": "google_local",
+        "q": request.keyword,
+        "location": request.location,
+        "api_key": request.api_key  # Use the key from the request
+    }
+
     try:
-        query = f"{keyword} in {location}"
-        url = f"https://www.google.com/search?q={query.replace(' ', '+')}"
+        search = GoogleSearch(params)
+        results = search.get_dict()
         
-        response = requests.get(url, headers=HEADERS)
-        response.raise_for_status()
-        
-        soup = BeautifulSoup(response.text, 'html.parser')
-        
+        local_results = results.get("local_results", [])
+
+        if not local_results:
+            return {"message": "No local results found for this query via SerpApi.", "leads": []}
+
         leads = []
-        for result in soup.select('.tF2Cxc, .g'): 
-            name_tag = result.select_one('h3')
-            link_tag = result.select_one('a')
-            website_tag = result.select_one('cite')
+        for result in local_results:
+            leads.append({
+                "name": result.get("title"),
+                "website": result.get("website"),
+                "phone": result.get("phone"),
+                "address": result.get("address"),
+                "rating": result.get("rating"),
+                "niche": request.keyword
+            })
             
-            if name_tag and link_tag and website_tag:
-                name = name_tag.get_text()
-                website_url = link_tag['href']
-                clean_website = website_tag.get_text().split(' ')[0]
-                
-                if 'google.com' not in website_url:
-                    email = find_email_on_site(clean_website)
-                    leads.append({
-                        "name": name, "website": clean_website, "email": email, "niche": keyword
-                    })
-        
-        if not leads:
-            return {"message": "No results found. Google may be blocking requests.", "leads": []}
-            
-        return {"leads": leads[:5]}
+        return {"leads": leads}
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Scraping failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"SerpApi scraping failed: {str(e)}")
